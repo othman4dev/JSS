@@ -49,3 +49,10 @@
 #id6:click {
     backgroundColor = red;
 }
+function event((#id6):click) {
+    #id7 {
+        backgroundColor = red;
+        borderRadius = 200px;
+        transition = 1s;
+    }
+}

@@ -98,16 +98,16 @@ function generateBothFiles() {
                             js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                             // Then add the onmouseover eventListener on mouseover to change the proprety to the reference proprety value
                             js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseover', function() {\n`;
-                            js += `this.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                            js += `\tthis.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
                             js += `});\n`;
                             // Then add the onmouseout eventListener on mouseout to return the proprety to its initial value
                             js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseout', function() {\n`;
-                            js += `this.style.${prop} = ${randSelector};\n`;
+                            js += `\tthis.style.${prop} = ${randSelector};\n`;
                             js += `});\n`;
                         } else {
                             // js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                             js += `document.querySelector('${selectorNoPseudo}').addEventListener('${pseudo_class}', function() {\n`;
-                            js += `this.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                            js += `\tthis.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
                             js += `});\n`;
                         }
                     } else {
@@ -123,16 +123,16 @@ function generateBothFiles() {
                             js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                             // Then add the onmouseover eventListener on mouseover to change the proprety to the reference proprety value
                             js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseover', function() {\n`;
-                            js += `this.style.${prop} = '${value}';\n`;
+                            js += `\tthis.style.${prop} = '${value}';\n`;
                             js += `});\n`;
                             // Then add the onmouseout eventListener on mouseout to return the proprety to its initial value
                             js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseout', function() {\n`;
-                            js += `this.style.${prop} = ${randSelector};\n`;
+                            js += `\tthis.style.${prop} = ${randSelector};\n`;
                             js += `});\n`;
                         } else {
                             // js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                             js += `document.querySelector('${selectorNoPseudo}').addEventListener('${pseudo_class}', function() {\n`;
-                            js += `this.style.${prop} = '${value}';\n`;
+                            js += `\tthis.style.${prop} = '${value}';\n`;
                             js += `});\n`;
                         }
                     }
@@ -196,7 +196,26 @@ function generateJavaScriptFile() {
             let prop = '';
             let value = '';
             // we use the flattenAndJoin function to turn [ '#' , ['d','i','v']] to '#div'
-            selector = flattenAndJoin(element[0][0]);
+            if (element[0].includes('function')) {
+                let event = flattenAndJoin(element[10][1]);
+                let event_selector = flattenAndJoin(element[7]);
+                js += `document.querySelector('${event_selector}').addEventListener('${event}', function() {\n`;
+                let statements = element[15];
+                statements.forEach(element3 => {
+                    let selector = flattenAndJoin(element3[0][0]);
+                    let propVal = element3[0][4];
+                    propVal.forEach(element2 => {
+                        prop = flattenAndJoin(element2[0]);
+                        value = flattenAndJoin(element2[4]);
+                        js += `\tdocument.querySelector('${selector}').style.${prop} = '${value}';\n`;
+                    });
+                });
+                js += `});\n`;
+                // console.log(statements);
+            } else {
+                selector = flattenAndJoin(element[0][0]);
+
+            
             // in this variable we get the entire line of proprety like : width = 100px; and put it in this variable which help loop on all lines of a selection (ofc the format of this is still in arrays)
             let propVal = element[0][4];
             // here we check if the selector contain any pseudo-classes because in javaScript it is not possible to select an element with its pseudo-class which require a little more treatment for example :
@@ -230,16 +249,16 @@ function generateJavaScriptFile() {
                                 js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                                 // Then add the onmouseover eventListener on mouseover to change the proprety to the reference proprety value
                                 js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseover', function() {\n`;
-                                js += `this.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                                js += `\tthis.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
                                 js += `});\n`;
                                 // Then add the onmouseout eventListener on mouseout to return the proprety to its initial value
                                 js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseout', function() {\n`;
-                                js += `this.style.${prop} = ${randSelector};\n`;
+                                js += `\tthis.style.${prop} = ${randSelector};\n`;
                                 js += `});\n`;
                             } else {
                                 // js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                                 js += `document.querySelector('${selectorNoPseudo}').addEventListener('${pseudo_class}', function() {\n`;
-                                js += `this.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                                js += `\tthis.style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
                                 js += `});\n`;
                             }
                         } else {
@@ -255,21 +274,21 @@ function generateJavaScriptFile() {
                                 js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                                 // Then add the onmouseover eventListener on mouseover to change the proprety to the reference proprety value
                                 js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseover', function() {\n`;
-                                js += `this.style.${prop} = '${value}';\n`;
+                                js += `\tthis.style.${prop} = '${value}';\n`;
                                 js += `});\n`;
                                 // Then add the onmouseout eventListener on mouseout to return the proprety to its initial value
                                 js += `document.querySelector('${selectorNoPseudo}').addEventListener('mouseout', function() {\n`;
-                                js += `this.style.${prop} = ${randSelector};\n`;
+                                js += `\tthis.style.${prop} = ${randSelector};\n`;
                                 js += `});\n`;
                             } else {
                                 // js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`;
                                 js += `document.querySelector('${selectorNoPseudo}').addEventListener('${pseudo_class}', function() {\n`;
-                                js += `this.style.${prop} = '${value}';\n`;
+                                js += `\tthis.style.${prop} = '${value}';\n`;
                                 js += `});\n`;
                             }
                         }
                     }
-                    });
+                });
             } else {
                 propVal.forEach(element2 => {
                     prop = flattenAndJoin(element2[0]);
@@ -284,6 +303,7 @@ function generateJavaScriptFile() {
                         js += `document.querySelector('${selector}').style.${prop} = '${value}';\n`;
                     }
                 });
+            }
             }
         });
         fs.writeFile('jss.js', js, (err) => {
