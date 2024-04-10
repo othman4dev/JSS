@@ -26,6 +26,7 @@ value
   / unary_operation
   / binary_operation
   / js_style_elements
+  / operation
 
 _ "whitespace"
   = [ \t\n\r]*
@@ -73,7 +74,10 @@ identifier
   = [a-zA-Z][a-zA-Z0-9_]*
 
 selector
-  = [a-zA-Z#._>][a-zA-Z0-9#._>]* 
+  = [a-zA-Z#._>][a-zA-Z0-9#._>]* pseudo_class*
+
+pseudo_class
+  = ":" [a-zA-Z0-9_]+
 
 color
   = "#" [0-9a-fA-F]{6}/[0-9a-fA-F]{3}
@@ -87,3 +91,9 @@ function_call
 
 comparison
   = ">=" / "<=" / "==" / ">" / "<"
+
+operation
+  =  " " _ value _ operator _ value _ ";"
+
+operator
+  = _ ("+" / "-" / "*" / "/") _

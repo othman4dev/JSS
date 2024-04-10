@@ -27,6 +27,7 @@
     width = 200px;
     backgroundColor = pink;
     display = flex;
+    transition = 2s;
 }
 #id7 {
     borderColor = (#id6)->borderColor;
@@ -36,4 +37,15 @@
     width = (#id6)->width;
     backgroundColor = purple;
     marginTop = 10px;
+}
+#id6:hover {
+    backgroundColor = orange;
+    cursor = pointer;
+}
+#id7:click {
+    backgroundColor = white;
+    transition = 1s;
+}
+#id6:click {
+    backgroundColor = red;
 }

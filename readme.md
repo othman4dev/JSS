@@ -20,10 +20,15 @@ This readme file provides instructions for getting started with JStyle.js, a Jav
 
 3. Write your code in the `style.jss` file using the correct syntax.
 
-4. Run the following command to generate the `jss.js` file, which contains your JavaScript code that will be linked to the DOM:
+4. Run the following command to generate the `jss.js` file only , which contains your JavaScript code that will be linked to the DOM:
     ```bash
     node main.js
     ```
+5. Optionaly you can run this command which will output 2 files : jss.js and jss.css , which you would have then to link then to your DOM :
+    ```bash
+    node main.js --both
+    ```
+
 
 ## Contributing
 
