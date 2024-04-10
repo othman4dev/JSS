@@ -51,7 +51,7 @@
 }
 function event((#id6):click) {
     #id7 {
-        backgroundColor = red;
+        backgroundColor = (#id5)->backgroundColor;
         borderRadius = 200px;
         transition = 1s;
     }
