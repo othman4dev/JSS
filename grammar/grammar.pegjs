@@ -24,18 +24,18 @@ identifier
   = [a-zA-Z][a-zA-Z0-9_]*
 
 value
-  = string
-  / unit
+  = arrow_function
   / value_function
-  / number
-  / color
-  / string
-  / arrow_function
+  / general_sentence
   / unary_operation
   / binary_operation
-  / js_style_elements
   / operation
-  / tunnel
+
+arrow_function
+  = "(" selector ")" index* "-" ">" js_style_elements
+
+general_sentence
+  = [^;]*
 
 _ "whitespace"
   = [ \t\n\r]*
@@ -46,20 +46,14 @@ js_style_elements
 index
   = "[" _ [0-9]+ _ "]"
 
+multi_value
+  = ( _ ([a-zA-Z]+ / [0-9]+ [a-zA-Z]* ) _ )*
+
 value_function
-  = [a-zA-Z0-9_]+ "(" _ ("-"* _ value _ ","*)* _ ")"
-
-unit
-  = '-'* number [a-zA-Z_%]+
-
-string
-  = "\"" (!"\"" .)* "\""
+  = [a-zA-Z0-9_]+ "(" _ ("-"* _ [a-zA-Z0-9_]+ _ ","*)* _ ")"
 
 coefficient
   = [a-zA-Z_]+ "(" number  ")" _ ";" _
-
-arrow_function
-  = "(" selector ")" index* "-" ">" js_style_elements
 
 unary_operation
   = "(" selector ")" ("+" / "-" / "?" / "!") ";"
@@ -82,13 +76,10 @@ comment
   = "//" (!"\n" .)*
 
 selector
-  = [a-zA-Z#._>][a-zA-Z0-9#._>]* pseudo_class*
+  = [a-zA-Z#._>*][a-zA-Z0-9#._>*]* pseudo_class*
 
 pseudo_class
   = ":" [a-zA-Z0-9_]+
-
-color
-  = "#" [0-9a-fA-F]{6} / "#" [0-9a-fA-F]{3}
 
 number
   = "-"? [0-9]+ ("." [0-9]+)?

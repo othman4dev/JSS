@@ -4,9 +4,11 @@
 // Comments are written by othman Kharbouch
 
 const fs = require('fs');
-const parser = require('./grammar.js');
-// Import the yargs library
+const parser = require('../parser/parser.js');
 const yargs = require('yargs');
+const chalk = require('chalk');
+
+console.log(chalk.yellow.bgBlue('JSS framework running ... '));
 
 // Define command-line options using yargs
 const argv = yargs
@@ -30,7 +32,7 @@ if (argv.both) {
 
 function generateBothFiles() {
   // Your logic to generate both CSS and JavaScript files
-  console.log('Generating both CSS and JavaScript files...');
+  console.log(chalk.green.bold('\nGenerating both CSS and JavaScript files ( jss.js , jss.css )...'));
   fs.readFile('style.jss', 'utf8', (err, data) => {
     if (err) {
         console.error('Error reading file:', err);
@@ -95,22 +97,9 @@ function generateBothFiles() {
                     });
                 });
                 js += `});\n`;
-
-                js += `document.querySelector('${event_selector}').addEventListener('mouseout', function() {\n`;
-                statements.forEach((element3, index) => {
-                    let selector = flattenAndJoin(element3[0][0]);
-                    let propVal = element3[0][4];
-                    propVal.forEach(element2 => {
-                        prop = flattenAndJoin(element2[0]);
-                        value = flattenAndJoin(element2[4]);
-                        js += `\tdocument.querySelector('${selector}').style.${prop} = ${randomSelectors[index]};\n`;
-                        index++;
-                    });
-                });
-                js += `});\n`;
                 } else {
                     let statements = element[15];
-                    js += `document.querySelector('${event_selector}').addEventListener('mouseout', function() {\n`;
+                    js += `document.querySelector('${event_selector}').addEventListener('${event}', function() {\n`;
                     statements.forEach(element3 => {
                         let selector = flattenAndJoin(element3[0][0]);
                         let propVal = element3[0][4];
@@ -130,27 +119,6 @@ function generateBothFiles() {
                     });
                     js += `});\n`;
                 }
-            js += `document.querySelector('${event_selector}').addEventListener('${event}', function() {\n`;
-            let statements = element[15];
-            statements.forEach(element3 => {
-                let selector = flattenAndJoin(element3[0][0]);
-                let propVal = element3[0][4];
-                propVal.forEach(element2 => {
-                    prop = flattenAndJoin(element2[0]);
-                    value = flattenAndJoin(element2[4]);
-                    if (value.includes('->')) {
-                        let referenceSelector = flattenAndJoin(element2[4][1]);
-                        let referenceProp = flattenAndJoin(element2[4][6]);
-                        let camelCaseCssProp = referenceProp;
-                        let cssLikeProp = camelCaseCssProp.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
-                        js += `\tdocument.querySelector('${selector}').style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
-                    } else {
-                        js += `\tdocument.querySelector('${selector}').style.${prop} = '${value}';\n`;
-                    }
-                });
-            });
-            js += `});\n`;
-            // console.log(statements);
         } else {
             // we use the flattenAndJoin function to turn [ '#' , ['d','i','v']] to '#div'
             selector = flattenAndJoin(element[0][0]);
@@ -247,19 +215,25 @@ function generateBothFiles() {
     });
     fs.writeFile('jss.js', js, (err) => {
         if (err) {
-            console.error('Error writing file:', err);
+            console.error(chalk.bgRed.black('Error writing file:', err));
             return;
         }
+        const lineCount = js.split('\n').length;
+        console.log(chalk.yellow.bold(`\n* Wrote ${lineCount} lines to jss.js`));
     });
     fs.writeFile('jss.css', css , (err) => {
         if (err) {
-            console.error('Error writing file:', err);
+            console.error(chalk.bgRed.black('Error writing file:', err));
             return;
         }
+        const lineCount = js.split('\n').length;
+        console.log(chalk.blue(`\n* Wrote ${lineCount} lines to jss.css\n`));
+        console.log(chalk.underline.magenta('\nMade By Otman Kharbouch : ') , chalk.yellow.bold.bgRed('Othman4dev'), chalk.underline.magenta(' (GitHub)\n'));
     });
 });
 }
 function generateJavaScriptFile() {
+    console.log(chalk.green.bold('\nGenerating JavaScript file only ( jss.js )...'));
     fs.readFile('style.jss', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading file:', err);
@@ -357,7 +331,7 @@ function generateJavaScriptFile() {
                     js += `});\n`;
                     } else {
                         let statements = element[15];
-                        js += `document.querySelector('${event_selector}').addEventListener('mouseout', function() {\n`;
+                        js += `document.querySelector('${event_selector}').addEventListener('${event}', function() {\n`;
                         statements.forEach(element3 => {
                             let selector = flattenAndJoin(element3[0][0]);
                             let propVal = element3[0][4];
@@ -377,27 +351,6 @@ function generateJavaScriptFile() {
                         });
                         js += `});\n`;
                     }
-                js += `document.querySelector('${event_selector}').addEventListener('${event}', function() {\n`;
-                let statements = element[15];
-                statements.forEach(element3 => {
-                    let selector = flattenAndJoin(element3[0][0]);
-                    let propVal = element3[0][4];
-                    propVal.forEach(element2 => {
-                        prop = flattenAndJoin(element2[0]);
-                        value = flattenAndJoin(element2[4]);
-                        if (value.includes('->')) {
-                            let referenceSelector = flattenAndJoin(element2[4][1]);
-                            let referenceProp = flattenAndJoin(element2[4][6]);
-                            let camelCaseCssProp = referenceProp;
-                            let cssLikeProp = camelCaseCssProp.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
-                            js += `\tdocument.querySelector('${selector}').style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
-                        } else {
-                            js += `\tdocument.querySelector('${selector}').style.${prop} = '${value}';\n`;
-                        }
-                    });
-                });
-                js += `});\n`;
-                // console.log(statements);
             } else {
                 selector = flattenAndJoin(element[0][0]);
 
@@ -494,9 +447,13 @@ function generateJavaScriptFile() {
         });
         fs.writeFile('jss.js', js, (err) => {
             if (err) {
-                console.error('Error writing file:', err);
+                console.error(chalk.bgRed.black('Error writing file:', err));
                 return;
             }
+
+            const lineCount = js.split('\n').length;
+            console.log(chalk.yellow.bold(`\n* Wrote ${lineCount} lines to jss.js`));
+            console.log(chalk.underline.magenta('\nMade By Otman Kharbouch : ') , chalk.yellow.bold.bgRed('Othman4dev'), chalk.underline.magenta(' (GitHub)\n'));
         });
     });
 }

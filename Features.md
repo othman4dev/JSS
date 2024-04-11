@@ -1,6 +1,6 @@
-# JStyle: JavaScript Styles Framework
+# JSS: JavaScript Styles Framework
 
-JStyle, short for JavaScript Styles, is a powerful framework that introduces its own syntax known as JSS, a blend of JavaScript and CSS. Let's explore the key differences between these two languages.
+JSS, short for JavaScript Styles, is a powerful framework that introduces its own syntax known as JSS, a blend of JavaScript and CSS. Let's explore the key differences between these two languages.
 
 ### In CSS
 ```css
@@ -138,4 +138,4 @@ The "Tunnel" feature ensures synchronized properties across elements, albeit bei
 
 ---
 
-This README provides a comprehensive overview of JStyle, empowering you with a blend of JavaScript flexibility and CSS simplicity. Explore the possibilities, and let JStyle revolutionize your styling experience!
+This README provides a comprehensive overview of JSS, empowering you with a blend of JavaScript flexibility and CSS simplicity. Explore the possibilities, and let JSS revolutionize your styling experience!

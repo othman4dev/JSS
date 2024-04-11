@@ -1,108 +1,132 @@
-#id1 {
-    height = 100px;
-    width = 150px;
-    backgroundColor = yellow;
+html {
+    fontFamily = Montserrat;
 }
-#id2 {
-    height = 100px;
-    width = 150px;
-    backgroundColor = green;
+body {
+    backgroundColor = whitesmoke;
+    color = black;
 }
-#id3 {
-    height = 100px;
-    width = 150px;
-    backgroundColor = red;
-}
-#id5 {
-    borderRadius = 500px;
-    height = 200px;
-    width = 200px;
-    backgroundColor = blue;
-}
-#id6 {
-    borderColor = black;
-    borderWidth = 5px;
-    borderStyle = solid;
-    height = 250px;
-    width = 200px;
-    backgroundColor = pink;
+.header {
+    backgroundColor = black;
+    color = white;
     display = flex;
-    transition = 2s;
+    alignItems = center;
+    justifyContent = space-between;
+    padding = 10px;
+    height = 60px;
+    marginBottom = 10px;
 }
-#id7 {
-    borderColor = (#id6)->borderColor;
-    borderWidth = (#id6)->borderWidth;
-    borderStyle = (#id6)->borderStyle;
-    height = 200px;
-    width = (#id6)->height;
-    backgroundColor = purple;
-    marginTop = 10px;
+* {
+    margin = 0;
+    padding = 0;
 }
-#id6:hover {
-    backgroundColor = orange;
-    cursor = pointer;
+.nav__list {
+    display = flex;
+    listStyle = none;
+    padding = 0;
+    gap = 15px;
+    paddingInline = 15px;
 }
-#id7:click {
+.h11 {
+    margin = 0;
+    fontWeight = 800;
+    marginLeft = 30px;
+}
+main {
+    display = flex;
+    alignItems = center;
+    justifyContent = center;
+    flexDirection = column;
+    minHeight = 87vh;
+}
+a {
+    textDecoration = none;
+    color = #fff;
+}
+modal {
+    width = 350px;
+    display = flex;
+    alignItems = center;
+    justifyContent = center;
+}
+div {
+    position = relative;
+    height = 100%;
+    width = 450px;
+    display = none;
+    padding = 15px;
     backgroundColor = white;
-    transition = 1s;
+    boxShadow = 0 0 15px 1px #00000020;
 }
-#id6:click {
-    backgroundColor = red;
-    width = 100px;
+.id {
+    color = #555;
+    fontSize = 12px;
+    position = absolute;
+    top = 10px;
+    right = 10px;
 }
-function event((#id6):click) {
-    #id7 {
-        backgroundColor = (#id5)->backgroundColor;
-        borderRadius = 200px;
-        transition = 1s;
+h2 {
+    paddingTop = 10px;
+    paddingBottom = 10px;
+}
+p {
+    padding = 15px;
+}
+button {
+    backgroundColor = black;
+    color = white;
+    padding = 5px 10px;
+    cursor = pointer;
+    fontSize = 15px;
+}
+#btnStart {
+    backgroundColor = black;
+    color = white;
+    padding = 10px;
+    cursor = pointer;
+    fontSize = 17px;
+    transition = 0.3s;
+}
+#btnStart:hover {
+    boxShadow = 0 2px 0px 2px #fd0;
+    transform = translateY(-2px);
+}
+function event((#btnStart):click) {
+    .modal {
+        display = block;
+    }
+    #btnStart {
+        display = none;
     }
 }
-#id8 {
-    position = absolute;
-    backgroundColor = grey;
-    zIndex = 2;
-    top = 50%;
-    left = 50%;
-    transform = translate(-50%, -50%);
-    display = none;
-    height = 500px;
-    width = 500px;
-}
-#id9 {
-    backgroundColor = black;
-    width = 120px;
-    height = 40px;
-}
-function event((#id9):hover) {
-    #id8 {
+function event((#btn1):click) {
+    .modal {
+        display = none;
+    }
+    .modal2 {
         display = block;
     }
 }
-#id8:::#id6 {
-    width(2);
+function event((#btn2):click) {
+    .modal2 {
+        display = none;
+    }
+    .modal3 {
+        display = block;
+    }
 }
-#id11 {
-    backgroundColor = orange;
-    width = 100px;
-    height = 100px;
-    borderColor = black;
-    borderWidth = 5px;
-    borderStyle = solid;
-    opacity = 0.5;
+function event((#btn3):click) {
+    .modal3 {
+        display = none;
+    }
+    .modal4 {
+        display = block;
+    }
 }
-#id12 {
-    backgroundColor = green;
-    width = 100px;
-    height = 100px;
-    margin = 10px;
-}
-#id11:hover {
-    backgroundColor = brown;
-    width = 200px;
-    opacity = 0.5;
-}
-#id11:::#id12 {
-    width(2);
-    backgroundColor(1);
-    opacity(2);
+function event((#btn4):click) {
+    .modal4 {
+        display = none;
+    }
+    .modal5 {
+        display = block;
+    }
 }
