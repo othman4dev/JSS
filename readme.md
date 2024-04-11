@@ -1,4 +1,4 @@
-# JavaScript Styles (JSS)
+# JavaScript Style Sheets (JSS)
 
 JSS or javaScript style sheets is a framework that came with its own syntax which is called JSS and it is a mexture of javaScript and css , let see the most deferences between these two.
 
