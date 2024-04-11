@@ -7,6 +7,7 @@ stylesheet
 statement
   = selector_block _
   / event_function
+  / tunnel
   / conditional
   / comment
 
@@ -19,9 +20,13 @@ event_function
 property_declaration
   = identifier _ "=" _  value _  ";" _
 
+identifier
+  = [a-zA-Z][a-zA-Z0-9_]*
+
 value
-  = identifier
+  = string
   / unit
+  / value_function
   / number
   / color
   / string
@@ -30,24 +35,28 @@ value
   / binary_operation
   / js_style_elements
   / operation
+  / tunnel
 
 _ "whitespace"
   = [ \t\n\r]*
 
 js_style_elements
-  = [a-zA-Z0-9_]+
+  = [a-zA-Z]+
 
 index
-  = [0-9]+
+  = "[" _ [0-9]+ _ "]"
+
+value_function
+  = [a-zA-Z0-9_]+ "(" _ ("-"* _ value _ ","*)* _ ")"
 
 unit
-  = number [a-zA-Z_]+
+  = '-'* number [a-zA-Z_%]+
 
 string
   = "\"" (!"\"" .)* "\""
 
-combined
-  = number* / string* / color* / unit* / arrow_function* / unary_operation* / binary_operation* / js_style_elements*
+coefficient
+  = [a-zA-Z_]+ "(" number  ")" _ ";" _
 
 arrow_function
   = "(" selector ")" index* "-" ">" js_style_elements
@@ -72,9 +81,6 @@ expression
 comment
   = "//" (!"\n" .)*
 
-identifier
-  = [a-zA-Z][a-zA-Z0-9_]*
-
 selector
   = [a-zA-Z#._>][a-zA-Z0-9#._>]* pseudo_class*
 
@@ -82,7 +88,7 @@ pseudo_class
   = ":" [a-zA-Z0-9_]+
 
 color
-  = "#" [0-9a-fA-F]{6}/[0-9a-fA-F]{3}
+  = "#" [0-9a-fA-F]{6} / "#" [0-9a-fA-F]{3}
 
 number
   = "-"? [0-9]+ ("." [0-9]+)?
@@ -95,3 +101,6 @@ operation
 
 operator
   = _ ("+" / "-" / "*" / "/") _
+
+tunnel
+  = selector ":::" selector _ "{" _ coefficient* _ "}" _

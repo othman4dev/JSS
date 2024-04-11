@@ -28,12 +28,6 @@ if (argv.both) {
   generateJavaScriptFile();
 }
 
-// Define functions to generate files
-function generateJavaScriptFile() {
-  // Your logic to generate JavaScript file
-  console.log('Generating JavaScript file...');
-}
-
 function generateBothFiles() {
   // Your logic to generate both CSS and JavaScript files
   console.log('Generating both CSS and JavaScript files...');
@@ -55,7 +49,7 @@ function generateBothFiles() {
     // Get the root of the parse tree with the selectors
     let selectors = parseTree[1];
     // Ths js script that will be eventually written in the jss.js file after operations
-    let js = '';
+    let js = `function numberSupport(string,coe) {\n\tlet numbers = string.match(/\\d+/g);\n\tlet letters = string.match(/[a-zA-Z]+/g);\n\tlet percetage = string.match(/%/g);\n\tlet result;\n\tif (!string.match(/\\d+/g)) {\n\t\tresult = string;\n\t} else\n\tif (letters && numbers) {\n\t\tlet number = numbers * coe;\n\t\tresult = number + letters;\n\t} else\n\tif (percetage) {\n\t\tlet number = numbers * coe;\n\t\tresult = number + '%';\n\t} else if (numbers) {\n\t\tlet number = numbers * coe;\n\t\tresult = number;\n\t} else {\n\t\tresult = string;\n\t}\n\treturn result;\n}\n`;
     let css = '';
     // Loops on all selectors and 
     selectors.forEach(element => {
@@ -67,6 +61,75 @@ function generateBothFiles() {
         if (element[0].includes('function')) {
             let event = flattenAndJoin(element[10][1]);
             let event_selector = flattenAndJoin(element[7]);
+            let randomSelectors = [];
+            if (event == 'hover') {
+                let statements = element[15];
+                statements.forEach(element3 => {
+                    let selector = flattenAndJoin(element3[0][0]);
+                    let propVal = element3[0][4];
+                    propVal.forEach(element2 => {
+                        let randSelector = `initial${uniqueid()}`;
+                        randomSelectors.push(randSelector);
+                        selectorNoPseudo = selector.split(':')[0];
+                        prop = flattenAndJoin(element2[0]);
+                        let cssLikeProp = prop.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+                        js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`
+                    });
+                });
+                js += `document.querySelector('${event_selector}').addEventListener('mouseover', function() {\n`;
+                statements.forEach(element3 => {
+                    let selector = flattenAndJoin(element3[0][0]);
+                    let propVal = element3[0][4];
+                    propVal.forEach(element2 => {
+                        prop = flattenAndJoin(element2[0]);
+                        value = flattenAndJoin(element2[4]);
+                        if (value.includes('->')) {
+                            let referenceSelector = flattenAndJoin(element2[4][1]);
+                            let referenceProp = flattenAndJoin(element2[4][6]);
+                            let camelCaseCssProp = referenceProp;
+                            let cssLikeProp = camelCaseCssProp.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+                            js += `\tdocument.querySelector('${selector}').style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                        } else {
+                            js += `\tdocument.querySelector('${selector}').style.${prop} = '${value}';\n`;
+                        }
+                    });
+                });
+                js += `});\n`;
+
+                js += `document.querySelector('${event_selector}').addEventListener('mouseout', function() {\n`;
+                statements.forEach((element3, index) => {
+                    let selector = flattenAndJoin(element3[0][0]);
+                    let propVal = element3[0][4];
+                    propVal.forEach(element2 => {
+                        prop = flattenAndJoin(element2[0]);
+                        value = flattenAndJoin(element2[4]);
+                        js += `\tdocument.querySelector('${selector}').style.${prop} = ${randomSelectors[index]};\n`;
+                        index++;
+                    });
+                });
+                js += `});\n`;
+                } else {
+                    let statements = element[15];
+                    js += `document.querySelector('${event_selector}').addEventListener('mouseout', function() {\n`;
+                    statements.forEach(element3 => {
+                        let selector = flattenAndJoin(element3[0][0]);
+                        let propVal = element3[0][4];
+                        propVal.forEach(element2 => {
+                            prop = flattenAndJoin(element2[0]);
+                            value = flattenAndJoin(element2[4]);
+                            if (value.includes('->')) {
+                                let referenceSelector = flattenAndJoin(element2[4][1]);
+                                let referenceProp = flattenAndJoin(element2[4][6]);
+                                let camelCaseCssProp = referenceProp;
+                                let cssLikeProp = camelCaseCssProp.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+                                js += `\tdocument.querySelector('${selector}').style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                            } else {
+                                js += `\tdocument.querySelector('${selector}').style.${prop} = '${value}';\n`;
+                            }
+                        });
+                    });
+                    js += `});\n`;
+                }
             js += `document.querySelector('${event_selector}').addEventListener('${event}', function() {\n`;
             let statements = element[15];
             statements.forEach(element3 => {
@@ -76,7 +139,6 @@ function generateBothFiles() {
                     prop = flattenAndJoin(element2[0]);
                     value = flattenAndJoin(element2[4]);
                     if (value.includes('->')) {
-                        console.log('true');
                         let referenceSelector = flattenAndJoin(element2[4][1]);
                         let referenceProp = flattenAndJoin(element2[4][6]);
                         let camelCaseCssProp = referenceProp;
@@ -164,7 +226,7 @@ function generateBothFiles() {
                             }
                         }
                     }
-                    });
+                });
             } else {
                 propVal.forEach(element2 => {
                     prop = flattenAndJoin(element2[0]);
@@ -205,6 +267,8 @@ function generateJavaScriptFile() {
         }
         // Parsed JSS syntax in this const
         const parseTree = parser.parse(data);
+
+        //console.log(parseTree[1][13]);
         // Function that flatten arrays to text
         function flattenAndJoin(arr) {
             return arr.flat(Infinity).join('');
@@ -216,17 +280,103 @@ function generateJavaScriptFile() {
         // Get the root of the parse tree with the selectors
         let selectors = parseTree[1];
         // Ths js script that will be eventually written in the jss.js file after operations
-        let js = '';
+        let js = `function numberSupport(string,coe) {\n\tlet numbers = string.match(/\\d+/g);\n\tlet letters = string.match(/[a-zA-Z]+/g);\n\tlet percetage = string.match(/%/g);\n\tlet result;\n\tif (!string.match(/\\d+/g)) {\n\t\tresult = string;\n\t} else\n\tif (letters && numbers) {\n\t\tlet number = numbers * coe;\n\t\tresult = number + letters;\n\t} else\n\tif (percetage) {\n\t\tlet number = numbers * coe;\n\t\tresult = number + '%';\n\t} else if (numbers) {\n\t\tlet number = numbers * coe;\n\t\tresult = number;\n\t} else {\n\t\tresult = string;\n\t}\n\treturn result;\n}\n`;
         // Loops on all selectors and 
         selectors.forEach(element => {
             // inside the selector we initialize the prop the selector as a string and the value
             let selector = '';
             let prop = '';
             let value = '';
+            //console.log(element[1]);
+            if (element[1].includes(':::')) {
+                let tunnel = element[0] + element[1] + element[2];
+                tunnel = tunnel.replace(/,/g, "");
+                let firstSelector = tunnel.split(':::')[0];
+                let secondSelector = tunnel.split(':::')[1];
+                let prop_functions = element[6];
+                let uniquID = uniqueid();
+                prop_functions.forEach(element => {
+                    let prop = flattenAndJoin(element[0]);
+                    let cssLikeProp = prop.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+                    let coe = element[2][1][0];
+                    js += ` var observer${uniquID} = new MutationObserver(function(mutations) {\n\tmutations.forEach(function(mutation) {\n\t\tif (mutation.attributeName === 'style') {\n`;
+                    js += `\t\t\tdocument.querySelector('${secondSelector}').style.${prop} = numberSupport(getComputedStyle(document.querySelector('${firstSelector}')).getPropertyValue('${cssLikeProp}') , ${coe});\n`; 
+                    js += `\t\t}\n\t});\n});\nvar config${uniquID} = { attributes: true, attributeFilter: ['style'] };\nobserver${uniquID}.observe(document.querySelector('${firstSelector}'), config${uniquID});\n`;
+                });
+            } else
             // we use the flattenAndJoin function to turn [ '#' , ['d','i','v']] to '#div'
             if (element[0].includes('function')) {
                 let event = flattenAndJoin(element[10][1]);
                 let event_selector = flattenAndJoin(element[7]);
+                let randomSelectors = [];
+                if (event == 'hover') {
+                    let statements = element[15];
+                    statements.forEach(element3 => {
+                        let selector = flattenAndJoin(element3[0][0]);
+                        let propVal = element3[0][4];
+                        propVal.forEach(element2 => {
+                            let randSelector = `initial${uniqueid()}`;
+                            randomSelectors.push(randSelector);
+                            selectorNoPseudo = selector.split(':')[0];
+                            prop = flattenAndJoin(element2[0]);
+                            let cssLikeProp = prop.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+                            js += `let ${randSelector} = getComputedStyle(document.querySelector('${selectorNoPseudo}')).getPropertyValue('${cssLikeProp}');\n`
+                        });
+                    });
+                    js += `document.querySelector('${event_selector}').addEventListener('mouseover', function() {\n`;
+                    statements.forEach(element3 => {
+                        let selector = flattenAndJoin(element3[0][0]);
+                        let propVal = element3[0][4];
+                        propVal.forEach(element2 => {
+                            prop = flattenAndJoin(element2[0]);
+                            value = flattenAndJoin(element2[4]);
+                            if (value.includes('->')) {
+                                let referenceSelector = flattenAndJoin(element2[4][1]);
+                                let referenceProp = flattenAndJoin(element2[4][6]);
+                                let camelCaseCssProp = referenceProp;
+                                let cssLikeProp = camelCaseCssProp.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+                                js += `\tdocument.querySelector('${selector}').style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                            } else {
+                                js += `\tdocument.querySelector('${selector}').style.${prop} = '${value}';\n`;
+                            }
+                        });
+                    });
+                    js += `});\n`;
+    
+                    js += `document.querySelector('${event_selector}').addEventListener('mouseout', function() {\n`;
+                    statements.forEach((element3, index) => {
+                        let selector = flattenAndJoin(element3[0][0]);
+                        let propVal = element3[0][4];
+                        propVal.forEach(element2 => {
+                            prop = flattenAndJoin(element2[0]);
+                            value = flattenAndJoin(element2[4]);
+                            js += `\tdocument.querySelector('${selector}').style.${prop} = ${randomSelectors[index]};\n`;
+                            index++;
+                        });
+                    });
+                    js += `});\n`;
+                    } else {
+                        let statements = element[15];
+                        js += `document.querySelector('${event_selector}').addEventListener('mouseout', function() {\n`;
+                        statements.forEach(element3 => {
+                            let selector = flattenAndJoin(element3[0][0]);
+                            let propVal = element3[0][4];
+                            propVal.forEach(element2 => {
+                                prop = flattenAndJoin(element2[0]);
+                                value = flattenAndJoin(element2[4]);
+                                if (value.includes('->')) {
+                                    let referenceSelector = flattenAndJoin(element2[4][1]);
+                                    let referenceProp = flattenAndJoin(element2[4][6]);
+                                    let camelCaseCssProp = referenceProp;
+                                    let cssLikeProp = camelCaseCssProp.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+                                    js += `\tdocument.querySelector('${selector}').style.${prop} = getComputedStyle(document.querySelector('${referenceSelector}')).getPropertyValue('${cssLikeProp}');\n`;
+                                } else {
+                                    js += `\tdocument.querySelector('${selector}').style.${prop} = '${value}';\n`;
+                                }
+                            });
+                        });
+                        js += `});\n`;
+                    }
                 js += `document.querySelector('${event_selector}').addEventListener('${event}', function() {\n`;
                 let statements = element[15];
                 statements.forEach(element3 => {
@@ -349,24 +499,4 @@ function generateJavaScriptFile() {
             }
         });
     });
-}
-
-// Process the parse tree
-function processParseTree(parseTree) {
-    let css = '';
-
-    parseTree.forEach(statement => {
-        if (statement.selector && statement.properties) {
-            const selector = statement.selector;
-            const properties = statement.properties;
-            let cssRule = `${selector} {`;
-            properties.forEach(property => {
-                cssRule += `${property.name}: ${property.value};`;
-            });
-            cssRule += '}';
-            css += cssRule;
-        }
-    });
-
-    return css;
 }

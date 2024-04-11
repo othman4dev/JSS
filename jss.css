@@ -48,7 +48,7 @@
  	border-style : solid ;
  }
 #id6 {
- 	height : 200px ;
+ 	height : 250px ;
  }
 #id6 {
  	width : 200px ;
@@ -70,4 +70,40 @@
  }
 #id7 {
  	margin-top : 10px ;
+ }
+#id8 {
+ 	position : absolute ;
+ }
+#id8 {
+ 	background-color : grey ;
+ }
+#id8 {
+ 	z-index : 2 ;
+ }
+#id8 {
+ 	top : 50% ;
+ }
+#id8 {
+ 	left : 50% ;
+ }
+#id8 {
+ 	transform : translate(-50%, -50%) ;
+ }
+#id8 {
+ 	display : none ;
+ }
+#id8 {
+ 	height : 500px ;
+ }
+#id8 {
+ 	width : 500px ;
+ }
+#id9 {
+ 	background-color : black ;
+ }
+#id9 {
+ 	width : 120px ;
+ }
+#id9 {
+ 	height : 40px ;
  }
