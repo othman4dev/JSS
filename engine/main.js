@@ -221,14 +221,48 @@ function generateBothFiles() {
         const lineCount = js.split('\n').length;
         console.log(chalk.yellow.bold(`\n* Wrote ${lineCount} lines to jss.js`));
     });
+    // Here we should Combine all styles with their common selectors
+    function combineSelectors(css) {
+      const rules = css.split('}').filter(Boolean);
+      const combined = {};
+    
+      for (const rule of rules) {
+        const [fullSelector, properties] = rule.split('{').map(s => s.trim());
+        const props = properties.split(';').filter(Boolean);
+    
+        if (!combined[fullSelector]) {
+          combined[fullSelector] = [];
+        }
+    
+        for (const prop of props) {
+          combined[fullSelector].push(prop.trim());
+        }
+      }
+    
+      let combinedCss = '';
+    
+      for (const selector in combined) {
+        combinedCss += `${selector} {\n`;
+    
+        for (const property of combined[selector]) {
+          combinedCss += `\t${property};\n`;
+        }
+    
+        combinedCss += '}\n';
+      }
+    
+      return combinedCss;
+    }
+
+    css = combineSelectors(css);
     fs.writeFile('jss.css', css , (err) => {
         if (err) {
             console.error(chalk.bgRed.black('Error writing file:', err));
             return;
         }
-        const lineCount = js.split('\n').length;
+        const lineCount = css.split('\n').length;
         console.log(chalk.blue(`\n* Wrote ${lineCount} lines to jss.css\n`));
-        console.log(chalk.underline.magenta('\nMade By Otman Kharbouch : ') , chalk.yellow.bold.bgRed('Othman4dev'), chalk.underline.magenta(' (GitHub)\n'));
+        console.log(chalk.underline.magenta('\nMade By Otman Kharbouch : ') , chalk.blueBright.bold('Othman4dev'), chalk.underline.magenta(' (GitHub)\n'));
     });
 });
 }
@@ -453,7 +487,7 @@ function generateJavaScriptFile() {
 
             const lineCount = js.split('\n').length;
             console.log(chalk.yellow.bold(`\n* Wrote ${lineCount} lines to jss.js`));
-            console.log(chalk.underline.magenta('\nMade By Otman Kharbouch : ') , chalk.yellow.bold.bgRed('Othman4dev'), chalk.underline.magenta(' (GitHub)\n'));
+            console.log(chalk.underline.magenta('\nMade By Otman Kharbouch : ') , chalk.blueBright.bold('Othman4dev'), chalk.underline.magenta(' (GitHub)\n'));
         });
     });
 }

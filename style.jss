@@ -2,7 +2,7 @@ html {
     fontFamily = Montserrat;
 }
 body {
-    backgroundColor = whitesmoke;
+    backgroundColor= whitesmoke;
     color = black;
 }
 .header {
