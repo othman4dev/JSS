@@ -21,19 +21,19 @@ function numberSupport(string,coe) {
 	}
 	return result;
 }
-let initialyb1omg3zc = getComputedStyle(document.querySelector('#btnStart')).getPropertyValue('box-shadow');
+let initialbgaieehms = getComputedStyle(document.querySelector('#btnStart')).getPropertyValue('box-shadow');
 document.querySelector('#btnStart').addEventListener('mouseover', function() {
 	this.style.boxShadow = '0 2px 0px 2px #fd0';
 });
 document.querySelector('#btnStart').addEventListener('mouseout', function() {
-	this.style.boxShadow = initialyb1omg3zc;
+	this.style.boxShadow = initialbgaieehms;
 });
-let initialknjdp55ad = getComputedStyle(document.querySelector('#btnStart')).getPropertyValue('transform');
+let initial69yb3cv23 = getComputedStyle(document.querySelector('#btnStart')).getPropertyValue('transform');
 document.querySelector('#btnStart').addEventListener('mouseover', function() {
 	this.style.transform = 'translateY(-2px)';
 });
 document.querySelector('#btnStart').addEventListener('mouseout', function() {
-	this.style.transform = initialknjdp55ad;
+	this.style.transform = initial69yb3cv23;
 });
 document.querySelector('#btnStart').addEventListener('click', function() {
 	document.querySelector('.modal').style.display = 'block';
